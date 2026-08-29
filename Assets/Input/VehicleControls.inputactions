@@ -1,0 +1,38 @@
+{
+  "name": "VehicleControls",
+  "maps": [
+    {
+      "name": "Vehicle",
+      "id": "d0e5f102-89ad-4a5f-b66d-b64c099c7c11",
+      "actions": [
+        { "name": "Drive", "type": "Value", "id": "974b9792-56fa-4fed-b7a1-a521e3dfd051", "expectedControlType": "Vector2", "processors": "", "interactions": "", "initialStateCheck": true },
+        { "name": "Hop", "type": "Button", "id": "89ba0f60-bb71-4f4a-9522-3f0851c1c2f1", "expectedControlType": "Button", "processors": "", "interactions": "", "initialStateCheck": false },
+        { "name": "Drift", "type": "Button", "id": "607c41c5-a9db-43c6-99db-f0d9a6e1542c", "expectedControlType": "Button", "processors": "", "interactions": "", "initialStateCheck": false },
+        { "name": "Boost", "type": "Button", "id": "6e897baf-af5c-42f1-9c2e-5792a5ad6b75", "expectedControlType": "Button", "processors": "", "interactions": "", "initialStateCheck": false },
+        { "name": "AirRoll", "type": "Value", "id": "96cbd3f5-b538-47e5-9dbf-a9e5faaecdfc", "expectedControlType": "Axis", "processors": "", "interactions": "", "initialStateCheck": true },
+        { "name": "Reset", "type": "Button", "id": "1dc931aa-c3b1-4ce5-b12c-3169d6415544", "expectedControlType": "Button", "processors": "", "interactions": "", "initialStateCheck": false },
+        { "name": "Pause", "type": "Button", "id": "a568e83a-cf10-41ef-90f2-9fd73f9de3b7", "expectedControlType": "Button", "processors": "", "interactions": "", "initialStateCheck": false }
+      ],
+      "bindings": [
+        { "name": "WASD", "id": "fbc050e6-e0f5-4ff1-b7c3-6e0ce3e4fe7f", "path": "2DVector", "interactions": "", "processors": "", "groups": "Keyboard", "action": "Drive", "isComposite": true, "isPartOfComposite": false },
+        { "name": "up", "id": "fa15e598-e02e-4827-9e13-7e77e27f70db", "path": "<Keyboard>/w", "interactions": "", "processors": "", "groups": "Keyboard", "action": "Drive", "isComposite": false, "isPartOfComposite": true },
+        { "name": "down", "id": "2f7203a0-5cf4-41c6-801f-6c52e0cddb7b", "path": "<Keyboard>/s", "interactions": "", "processors": "", "groups": "Keyboard", "action": "Drive", "isComposite": false, "isPartOfComposite": true },
+        { "name": "left", "id": "f47893c9-b38a-461d-9c9a-23453a6fb9ca", "path": "<Keyboard>/a", "interactions": "", "processors": "", "groups": "Keyboard", "action": "Drive", "isComposite": false, "isPartOfComposite": true },
+        { "name": "right", "id": "82c1bee8-0218-48ab-a0db-4f586d1c6304", "path": "<Keyboard>/d", "interactions": "", "processors": "", "groups": "Keyboard", "action": "Drive", "isComposite": false, "isPartOfComposite": true },
+        { "name": "", "id": "a15a2252-2c9d-409a-ae90-4b966a0f4a90", "path": "<Keyboard>/space", "interactions": "", "processors": "", "groups": "Keyboard", "action": "Hop", "isComposite": false, "isPartOfComposite": false },
+        { "name": "", "id": "31cc6f8a-c7f9-46a1-b9b8-4ddcd30a64da", "path": "<Keyboard>/leftShift", "interactions": "", "processors": "", "groups": "Keyboard", "action": "Drift", "isComposite": false, "isPartOfComposite": false },
+        { "name": "", "id": "9fe3d87c-a0aa-4c23-94e1-8330da4eb186", "path": "<Keyboard>/rightShift", "interactions": "", "processors": "", "groups": "Keyboard", "action": "Drift", "isComposite": false, "isPartOfComposite": false },
+        { "name": "", "id": "c3333389-c183-427d-8132-b5aafc86c6fc", "path": "<Keyboard>/leftCtrl", "interactions": "", "processors": "", "groups": "Keyboard", "action": "Boost", "isComposite": false, "isPartOfComposite": false },
+        { "name": "", "id": "33d35d1d-3486-4fea-a5eb-7499610fce87", "path": "<Keyboard>/rightCtrl", "interactions": "", "processors": "", "groups": "Keyboard", "action": "Boost", "isComposite": false, "isPartOfComposite": false },
+        { "name": "Q/E", "id": "96629138-f06c-49a4-98ea-a26b3ab1d7c8", "path": "1DAxis", "interactions": "", "processors": "", "groups": "Keyboard", "action": "AirRoll", "isComposite": true, "isPartOfComposite": false },
+        { "name": "negative", "id": "e2e70455-a839-43c4-b70d-655853e37069", "path": "<Keyboard>/q", "interactions": "", "processors": "", "groups": "Keyboard", "action": "AirRoll", "isComposite": false, "isPartOfComposite": true },
+        { "name": "positive", "id": "c6cf1f14-cda1-4a80-9407-1b10df48f0ca", "path": "<Keyboard>/e", "interactions": "", "processors": "", "groups": "Keyboard", "action": "AirRoll", "isComposite": false, "isPartOfComposite": true },
+        { "name": "", "id": "0b7a4ba3-7c3b-425d-8b89-a2fc95de7c03", "path": "<Keyboard>/r", "interactions": "", "processors": "", "groups": "Keyboard", "action": "Reset", "isComposite": false, "isPartOfComposite": false },
+        { "name": "", "id": "724d46f1-0f9f-47cb-9c47-6b749cd8c099", "path": "<Keyboard>/escape", "interactions": "", "processors": "", "groups": "Keyboard", "action": "Pause", "isComposite": false, "isPartOfComposite": false }
+      ]
+    }
+  ],
+  "controlSchemes": [
+    { "name": "Keyboard", "bindingGroup": "Keyboard", "devices": [ { "devicePath": "<Keyboard>", "isOptional": false, "isOR": false } ] }
+  ]
+}
