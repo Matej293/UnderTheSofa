@@ -115,3 +115,7 @@ InitTestScene*.unity*
 
 # Agents
 AGENTS.md
+
+# Temp
+Assets/Temp/
+Assets/Temp.meta
