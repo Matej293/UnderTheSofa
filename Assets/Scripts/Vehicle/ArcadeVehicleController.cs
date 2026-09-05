@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody), typeof(VehicleInput), typeof(VehicleGrounding))]
@@ -22,6 +23,11 @@ public sealed class ArcadeVehicleController : MonoBehaviour
     [SerializeField, Range(0f, 45f)] private float visualSteeringAngle = 30f;
     [SerializeField] private Transform frontLeftWheel;
     [SerializeField] private Transform frontRightWheel;
+    [SerializeField] private Transform rearLeftWheel;
+    [SerializeField] private Transform rearRightWheel;
+    [SerializeField, Min(0.01f)] private float visualWheelRadius = 0.28f;
+    [SerializeField] private Transform cockpitModelRoot;
+    [SerializeField, Min(0f)] private float cockpitSteeringWheelAngle = 110f;
 
     [Header("Drift")]
     [SerializeField, Min(0f)] private float driftEngageSpeed = 3f;
@@ -46,6 +52,27 @@ public sealed class ArcadeVehicleController : MonoBehaviour
     private VehicleStats stats;
     private Quaternion frontLeftWheelBaseRotation;
     private Quaternion frontRightWheelBaseRotation;
+    private Vector3 frontLeftWheelBasePosition;
+    private Vector3 frontRightWheelBasePosition;
+    private Vector3 frontLeftWheelPivotLocal;
+    private Vector3 frontRightWheelPivotLocal;
+    private Quaternion rearLeftWheelBaseRotation;
+    private Quaternion rearRightWheelBaseRotation;
+    private Vector3 rearLeftWheelBasePosition;
+    private Vector3 rearRightWheelBasePosition;
+    private Vector3 rearLeftWheelPivotLocal;
+    private Vector3 rearRightWheelPivotLocal;
+    private float visualWheelSpinAngle;
+    private readonly List<CockpitSteeringWheelPart> cockpitSteeringWheelParts = new();
+    private Vector3 cockpitSteeringWheelPivotLocal;
+    private Vector3 cockpitSteeringWheelAxisLocal = Vector3.forward;
+
+    private struct CockpitSteeringWheelPart
+    {
+        public Transform Transform;
+        public Vector3 BasePosition;
+        public Quaternion BaseRotation;
+    }
 
     private void Awake()
     {
@@ -53,24 +80,168 @@ public sealed class ArcadeVehicleController : MonoBehaviour
         input = GetComponent<VehicleInput>();
         grounding = GetComponent<VehicleGrounding>();
         stats = GetComponent<VehicleStats>();
-        frontLeftWheel ??= transform.Find("Wheel_FL");
-        frontRightWheel ??= transform.Find("Wheel_FR");
+        frontLeftWheel ??= transform.Find("WHEEL_FL");
+        frontRightWheel ??= transform.Find("WHEEL_FR");
+        rearLeftWheel ??= transform.Find("test/WHEEL_BL");
+        rearRightWheel ??= transform.Find("test/WHEEL_BR");
         frontLeftWheelBaseRotation = frontLeftWheel != null ? frontLeftWheel.localRotation : Quaternion.identity;
         frontRightWheelBaseRotation = frontRightWheel != null ? frontRightWheel.localRotation : Quaternion.identity;
+        frontLeftWheelBasePosition = frontLeftWheel != null ? frontLeftWheel.localPosition : Vector3.zero;
+        frontRightWheelBasePosition = frontRightWheel != null ? frontRightWheel.localPosition : Vector3.zero;
+        frontLeftWheelPivotLocal = GetWheelPivotLocal(frontLeftWheel);
+        frontRightWheelPivotLocal = GetWheelPivotLocal(frontRightWheel);
+        rearLeftWheelBaseRotation = rearLeftWheel != null ? rearLeftWheel.localRotation : Quaternion.identity;
+        rearRightWheelBaseRotation = rearRightWheel != null ? rearRightWheel.localRotation : Quaternion.identity;
+        rearLeftWheelBasePosition = rearLeftWheel != null ? rearLeftWheel.localPosition : Vector3.zero;
+        rearRightWheelBasePosition = rearRightWheel != null ? rearRightWheel.localPosition : Vector3.zero;
+        rearLeftWheelPivotLocal = GetWheelPivotLocal(rearLeftWheel);
+        rearRightWheelPivotLocal = GetWheelPivotLocal(rearRightWheel);
+        CacheCockpitSteeringWheel();
     }
 
     private void Update()
     {
         float steeringAngle = input.Drive.x * visualSteeringAngle;
-        if (frontLeftWheel != null)
+        float forwardSpeed = Vector3.Dot(body.linearVelocity, transform.forward);
+        visualWheelSpinAngle -= forwardSpeed / visualWheelRadius * Mathf.Rad2Deg * Time.deltaTime;
+        visualWheelSpinAngle = Mathf.Repeat(visualWheelSpinAngle, 360f);
+
+        ApplyWheelVisual(frontLeftWheel, frontLeftWheelBasePosition, frontLeftWheelBaseRotation, frontLeftWheelPivotLocal, steeringAngle);
+        ApplyWheelVisual(frontRightWheel, frontRightWheelBasePosition, frontRightWheelBaseRotation, frontRightWheelPivotLocal, steeringAngle);
+        ApplyWheelVisual(rearLeftWheel, rearLeftWheelBasePosition, rearLeftWheelBaseRotation, rearLeftWheelPivotLocal, 0f);
+        ApplyWheelVisual(rearRightWheel, rearRightWheelBasePosition, rearRightWheelBaseRotation, rearRightWheelPivotLocal, 0f);
+        ApplyCockpitSteeringWheel(-input.Drive.x * cockpitSteeringWheelAngle);
+    }
+
+    private void CacheCockpitSteeringWheel()
+    {
+        cockpitSteeringWheelParts.Clear();
+        cockpitModelRoot ??= transform.Find("2001-acura-integra-type-r");
+        if (cockpitModelRoot == null)
         {
-            frontLeftWheel.localRotation = frontLeftWheelBaseRotation * Quaternion.Euler(0f, steeringAngle, 0f);
+            return;
         }
 
-        if (frontRightWheel != null)
+        Vector3 pivotWorld = Vector3.zero;
+        Transform steeringWheelPlastic = null;
+        foreach (Transform part in cockpitModelRoot.GetComponentsInChildren<Transform>(true))
         {
-            frontRightWheel.localRotation = frontRightWheelBaseRotation * Quaternion.Euler(0f, steeringAngle, 0f);
+            if (!part.name.StartsWith("acu_integrar_01_cockpit_steering_wheel_"))
+            {
+                continue;
+            }
+
+            cockpitSteeringWheelParts.Add(new CockpitSteeringWheelPart
+            {
+                Transform = part,
+                BasePosition = part.localPosition,
+                BaseRotation = part.localRotation
+            });
+            pivotWorld += GetMeshCenterWorld(part);
+
+            if (part.name.EndsWith("steering_wheel_plastic_"))
+            {
+                steeringWheelPlastic = part;
+            }
         }
+
+        if (cockpitSteeringWheelParts.Count > 0)
+        {
+            cockpitSteeringWheelPivotLocal = transform.InverseTransformPoint(pivotWorld / cockpitSteeringWheelParts.Count);
+            cockpitSteeringWheelAxisLocal = GetMeshNormalLocal(steeringWheelPlastic);
+        }
+    }
+
+    private void ApplyCockpitSteeringWheel(float steeringAngle)
+    {
+        Vector3 pivotWorld = transform.TransformPoint(cockpitSteeringWheelPivotLocal);
+        foreach (CockpitSteeringWheelPart part in cockpitSteeringWheelParts)
+        {
+            if (part.Transform == null)
+            {
+                continue;
+            }
+
+            part.Transform.localPosition = part.BasePosition;
+            part.Transform.localRotation = part.BaseRotation;
+            part.Transform.RotateAround(pivotWorld, transform.TransformDirection(cockpitSteeringWheelAxisLocal), steeringAngle);
+        }
+    }
+
+    private Vector3 GetWheelPivotLocal(Transform wheel)
+    {
+        if (wheel == null)
+        {
+            return Vector3.zero;
+        }
+
+        return transform.InverseTransformPoint(GetMeshCenterWorld(wheel));
+    }
+
+    private static Vector3 GetMeshCenterWorld(Transform meshTransform)
+    {
+        MeshFilter meshFilter = meshTransform.GetComponent<MeshFilter>();
+        return meshFilter != null && meshFilter.sharedMesh != null
+            ? meshTransform.TransformPoint(meshFilter.sharedMesh.bounds.center)
+            : meshTransform.position;
+    }
+
+    private Vector3 GetMeshNormalLocal(Transform meshTransform)
+    {
+        if (meshTransform == null)
+        {
+            return Vector3.forward;
+        }
+
+        MeshFilter meshFilter = meshTransform.GetComponent<MeshFilter>();
+        Mesh mesh = meshFilter != null ? meshFilter.sharedMesh : null;
+        if (mesh == null)
+        {
+            return Vector3.forward;
+        }
+
+        Vector3[] vertices = mesh.vertices;
+        int[] triangles = mesh.triangles;
+        float largestNormalSqrMagnitude = 0f;
+        Vector3 largestNormal = Vector3.zero;
+        for (int triangle = 0; triangle < triangles.Length; triangle += 3)
+        {
+            Vector3 normal = Vector3.Cross(
+                vertices[triangles[triangle + 1]] - vertices[triangles[triangle]],
+                vertices[triangles[triangle + 2]] - vertices[triangles[triangle]]);
+            if (normal.sqrMagnitude > largestNormalSqrMagnitude)
+            {
+                largestNormalSqrMagnitude = normal.sqrMagnitude;
+                largestNormal = normal;
+            }
+        }
+
+        if (largestNormalSqrMagnitude <= 0f)
+        {
+            return Vector3.forward;
+        }
+
+        Vector3 worldAxis = meshTransform.TransformDirection(largestNormal / Mathf.Sqrt(largestNormalSqrMagnitude));
+        return transform.InverseTransformDirection(worldAxis).normalized;
+    }
+
+    private void ApplyWheelVisual(
+        Transform wheel,
+        Vector3 basePosition,
+        Quaternion baseRotation,
+        Vector3 pivotLocal,
+        float steeringAngle)
+    {
+        if (wheel == null)
+        {
+            return;
+        }
+
+        wheel.localPosition = basePosition;
+        wheel.localRotation = baseRotation;
+        Vector3 wheelPivot = transform.TransformPoint(pivotLocal);
+        wheel.RotateAround(wheelPivot, transform.up, steeringAngle);
+        wheel.RotateAround(wheelPivot, wheel.right, visualWheelSpinAngle);
     }
 
     private void FixedUpdate()
