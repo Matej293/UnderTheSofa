@@ -9,6 +9,11 @@ public sealed class CoinCounterHUD : MonoBehaviour
 
     private void Awake()
     {
+        if (wallet == null)
+        {
+            wallet = FindFirstObjectByType<CoinWallet>();
+        }
+
         Canvas canvas = new GameObject("CoinCanvas", typeof(Canvas), typeof(CanvasScaler)).GetComponent<Canvas>();
         canvas.renderMode = RenderMode.ScreenSpaceOverlay;
         canvas.overrideSorting = true;

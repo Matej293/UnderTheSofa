@@ -6,6 +6,7 @@ public sealed class VehicleChassisColliderFitter : MonoBehaviour
 {
     [SerializeField] private Transform modelRoot;
     [SerializeField, Min(0f)] private float padding = 0.04f;
+    [SerializeField, Range(0.5f, 1f)] private float horizontalSizeMultiplier = 0.85f;
 
     private BoxCollider chassisCollider;
 
@@ -66,6 +67,10 @@ public sealed class VehicleChassisColliderFitter : MonoBehaviour
         }
 
         chassisCollider.center = localBounds.center;
-        chassisCollider.size = localBounds.size + Vector3.one * (padding * 2f);
+
+        Vector3 colliderSize = localBounds.size + Vector3.one * (padding * 2f);
+        colliderSize.x *= horizontalSizeMultiplier;
+        colliderSize.z *= horizontalSizeMultiplier;
+        chassisCollider.size = colliderSize;
     }
 }
