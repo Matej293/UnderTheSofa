@@ -13,6 +13,7 @@ public sealed class ArcadeVehicleController : MonoBehaviour
     [SerializeField, Min(0f)] private float reverseSpeed = 9f;
     [SerializeField, Min(0f)] private float frontLateralGrip = 18f;
     [SerializeField, Min(0f)] private float rearLateralGrip = 14f;
+    [SerializeField] private Vector3 frontAxleLocal = new(0f, -0.22f, 0.72f);
     [SerializeField] private Transform rearDrivePoint;
 
     [Header("Steering")]
@@ -296,7 +297,7 @@ public sealed class ArcadeVehicleController : MonoBehaviour
             body.MoveRotation(body.rotation * Quaternion.AngleAxis(turnAmount, Vector3.up));
         }
 
-        Vector3 frontAxlePosition = transform.TransformPoint(0f, -0.22f, 0.72f);
+        Vector3 frontAxlePosition = transform.TransformPoint(frontAxleLocal);
         Vector3 rearAxlePosition = GetRearDrivePosition();
         float rearGrip = rearLateralGrip;
         if (driftActive)

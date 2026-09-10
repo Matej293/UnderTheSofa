@@ -15,9 +15,9 @@ public sealed class AccelerationUpgradePad : MonoBehaviour
             return;
         }
 
-        CoinWallet wallet = other.GetComponentInParent<CoinWallet>();
+        RingWallet wallet = other.GetComponentInParent<RingWallet>();
         VehicleStats stats = other.GetComponentInParent<VehicleStats>();
-        if (wallet == null || stats == null || !wallet.TrySpend(cost))
+        if (wallet == null || stats == null || !wallet.TrySpendRings(cost))
         {
             return;
         }

@@ -39,7 +39,7 @@ structure to climb. Books work as steps. A chair can form part of a
 route to a kitchen counter. A cardboard box can become a jump without
 needing to look like a videogame ramp.
 
-The player drives through the house and backyard, collects coins,
+The player drives through the house and backyard, collects rings,
 reaches difficult places, finds shortcuts, and performs tricks along the
 way.
 
@@ -66,7 +66,7 @@ while building a different game around that movement.
 
 > Drive a tiny RC car through a giant house and backyard. Use furniture,
 > toys, books, boxes, and other household objects as ramps and platforms
-> while collecting coins, finding hidden routes, and performing stunts.
+> while collecting rings, finding hidden routes, and performing stunts.
 
 ## What the Player Should Want to Do
 
@@ -200,7 +200,7 @@ The living room may center on the sofa and bookshelf. The kitchen can
 focus on the counter and refrigerator. The bedroom can use the bed,
 desk, shelves, and piles of toys.
 
-Getting higher should usually reveal something new. That might be coins,
+Getting higher should usually reveal something new. That might be rings,
 a shortcut, another route, or a view of an area the player has not
 entered yet.
 
@@ -231,16 +231,16 @@ routes.
 
 ## Collectibles
 
-Coins should guide the player as much as they reward them.
+Rings should guide the player as much as they reward the player.
 
-A line of coins can show a route up a chair. Coins hanging in the air
-above a ramp can communicate the intended jump arc. A single coin behind
+A line of rings can show a route up a chair. Rings hanging in the air
+above a ramp can communicate the intended jump arc. A single ring behind
 furniture can hint at a hidden passage.
 
 Random placement would waste that function.
 
 Special collectibles can be harder to reach and may be tied to room
-completion or upgrades.
+completion or hidden challenges.
 
 # Story Overview
 
@@ -312,12 +312,12 @@ mastering the car and the house.
 
 The player enters an area and starts looking around.
 
-Coins or visible landmarks pull them toward simple routes at first.
+Rings or visible landmarks pull them toward simple routes at first.
 While moving through the room, they see harder places above or behind
 the obvious path.
 
 A typical sequence might begin on the living-room floor. The player
-follows coins toward a stack of books, drives onto the coffee table,
+follows rings toward a stack of books, drives onto the coffee table,
 then notices a jump from the table to the sofa. Landing on the sofa
 reveals another route along the cushions.
 
@@ -512,8 +512,8 @@ them.
 
 The game should save automatically.
 
-Saved data includes room access, coins, special collectibles, completed
-challenges, upgrades, and settings.
+Saved data includes room access, collected rings, special collectibles,
+completed challenges, and settings.
 
 Multiple save slots are TBD.
 
@@ -626,7 +626,7 @@ The camera system should require no player input during normal play.
 
 The game should avoid covering the screen with permanent information.
 
-A coin counter and short stunt messages are enough during normal play.
+A ring counter and short stunt messages are enough during normal play.
 
 Room completion can appear when the player pauses or enters a room.
 
@@ -634,7 +634,7 @@ For example:
 
     LIVING ROOM
 
-    Coins       17 / 25
+    Rings       17 / 25
     Secrets      2 / 4
     Stunts       3 / 5
 
@@ -690,11 +690,8 @@ setting up a jump.
 The car also has a boost meter. Boost provides a short increase in speed
 and can be used for longer jumps, faster routes, and stunt lines.
 
-The player should receive the basic boost ability through normal
-progression rather than through an optional upgrade choice.
-
-Later upgrades can improve existing abilities without changing the basic
-control scheme.
+Boost is part of the base car's control set. The car's capabilities stay
+consistent throughout the game rather than changing through progression.
 
 # Player Progression
 
@@ -705,35 +702,13 @@ Routes that feel difficult early in the game should become easier as the
 player learns how much speed a jump needs, when to drift, and how the
 car behaves in the air.
 
-The car also improves over time.
+The car's capabilities do not improve over time. Every required route
+must be completable with the base car and the skills the player has
+developed.
 
-Clearing a room makes a new group of upgrades available. The player
-spends collected coins to buy the upgrades they want.
-
-Upgrade choices must never block progress.
-
-The player should always have the abilities needed to reach the next
-room regardless of which optional upgrades they purchased. An upgrade
-may make a route easier, faster, or more fun, but the game should never
-punish the player for buying the “wrong” upgrade.
-
-## Possible Upgrades
-
-| **Upgrade**    | **Effect**                                              |
-|:---------------|:--------------------------------------------------------|
-| Motor          | Improves acceleration.                                  |
-| Top Speed      | Raises the car’s maximum speed.                         |
-| Grip           | Gives the car more control during normal driving.       |
-| Drift Control  | Makes drifting easier to hold and recover from.         |
-| Suspension     | Improves stability on rough surfaces and hard landings. |
-| Air Control    | Gives the player more control while airborne.           |
-| Boost Capacity | Increases the maximum amount stored in the boost meter. |
-| Boost Recharge | Refills the boost meter faster.                         |
-
-Upgrades should stay simple and easy to understand.
-
-The game does not need a large skill tree or complicated stat system.
-Each upgrade should have an obvious effect on how the car feels.
+Progression comes from collecting rings. Each main room has a clearly
+communicated ring requirement, and collecting enough rings opens the
+route to the next area.
 
 # Failure and Recovery
 
@@ -777,35 +752,31 @@ points in one sequence.
 
 Online leaderboards are outside the current scope.
 
-# Coins and Rewards
+# Rings and Progression
 
-Coins are the main progression currency.
+Rings are the main progression collectible, not currency.
 
 The player finds them through normal exploration, difficult climbing
 routes, stunt lines, hidden areas, and optional challenges.
 
-Coins also help communicate where the player can go. A trail of coins
+Rings also help communicate where the player can go. A trail of rings
 may lead toward a ramp, across furniture, or through a difficult jump.
 
-After clearing a room, a new set of upgrades becomes available. The
-player can spend the coins they have collected on any of those upgrades.
+Each main room provides a clearly communicated ring target. Collecting
+enough rings opens the route to the next progression area. The target
+must be achievable with the base car, without requiring every ring or
+any optional challenge.
 
-The player is not expected to purchase every upgrade immediately.
-
-Choosing one upgrade over another should change how the car feels
-without deciding whether the player can continue through the game.
-
-Coins found in older rooms remain useful because the player can return
-later to collect ones they missed and spend them on newly available
-upgrades.
+Rings found in older rooms remain useful for room completion, secrets,
+and optional challenges.
 
 ## Other Collectibles
 
 Special collectibles may still exist for completion or hidden
 challenges.
 
-These should be separate from the main upgrade economy so coins remain
-easy to understand.
+These should be separate from the main ring progression requirement so
+the route to the next area remains easy to understand.
 
 # Game Progression
 
@@ -824,14 +795,14 @@ and connecting spaces.
 | 3         | Kitchen       | Chairs, counters, vertical routes, precise jumps.  |
 | 4         | Bedroom       | Toys, soft surfaces, clutter, improvised tracks.   |
 | 5         | Bathroom      | Slippery surfaces and tighter routes, if retained. |
-| 6         | Garage        | Larger ramps, upgrades, stunt-focused play.        |
+| 6         | Garage        | Larger ramps and stunt-focused play.                |
 | 7         | Backyard      | Rough ground, long jumps, open routes.             |
 | 8         | Garden / Shed | Advanced routes and late-game secrets.             |
 
 The game should let players return to old rooms.
 
-A faster car or better grip can turn an old route into a new one. Hidden
-collectibles also give players a reason to come back.
+Hidden collectibles, optional challenges, and unexplored routes give
+players a reason to come back.
 
 # Gameplay Types
 
@@ -882,42 +853,26 @@ These interactions should stay physical and easy to understand.
 
 ## Doors and Room Progression
 
-Progression should come from reaching a difficult elevated location
-rather than pushing objects out of the way.
+Progression should come from collecting enough rings rather than pushing
+objects out of the way.
 
-Each main room contains a clear high point that acts as the progression
-goal. Reaching it requires the player to understand the room, find a
-route upward, build enough speed for the required jumps, and use the
-car’s movement well.
+Each main room has a clear ring target and a visible route to the next
+area. When the player reaches the target, the next door, passage, or
+other route opens automatically.
 
-The goal may be placed on top of a sofa, kitchen counter, desk,
-bookshelf, cabinet, or another large piece of furniture.
+Ring placement must reinforce vertical traversal. Required rings should
+lead the player across furniture, ramps, jumps, and varied routes; high
+locations can hold optional rings, secrets, shortcuts, and challenges.
 
-At the top, the player activates something that makes sense within the
-environment. This can be a low-mounted button, remote control,
-electronic switch, or another simple trigger that the RC car can hit by
-driving into it.
+In the current Living Room prototype, collecting 15 rings opens the
+nearby automatic door. The ring layout should guide the player up the
+sofa and across the room's vertical routes, so the collection target
+reinforces traversal rather than replacing it.
 
-Activating the goal opens the route to the next area.
-
-For example, the living room may require the player to climb onto the
-back of the sofa and reach a remote control placed there. Hitting the
-remote opens a nearby automatic door or changes another part of the
-house.
-
-The kitchen may require reaching the counter and activating a switch
-near the edge. The bedroom may place its progression trigger on a desk
-or shelf.
-
-The exact device can change between rooms, but the structure stays
-consistent:
-
-> See the high destination $`\rightarrow`$ work out a route upward
-> $`\rightarrow`$ reach it $`\rightarrow`$ activate the progression
-> trigger $`\rightarrow`$ gain access to the next area.
-
-This makes vertical traversal part of the main progression instead of
-leaving climbing as optional side content.
+Each progression gate must display its required ring count clearly and
+each room must provide enough reachable rings to meet it with the base
+car. The player should not need every ring or any optional challenge to
+continue.
 
 # Level Design
 
@@ -1046,10 +1001,6 @@ The garage supports larger stunts.
 Boxes, shelves, tools, boards, workbenches, and stored objects naturally
 form ramps and platforms.
 
-The garage may also become the place where the player installs upgrades.
-
-That would give the room a reason to revisit it between other areas.
-
 ## Backyard
 
 The backyard opens the game up.
@@ -1093,12 +1044,12 @@ good movement between rooms.
 
 Optional challenges reuse the same rooms.
 
-Examples include time trials, stunt-score targets, coin routes,
+Examples include time trials, stunt-score targets, ring routes,
 precision jumps, and reaching a marked location without resetting.
 
 A challenge does not need its own separate level.
 
-The player may see a trail of coins through the kitchen and activate a
+The player may see a trail of rings through the kitchen and activate a
 timed version of the same route.
 
 This keeps production smaller while giving old areas more use.
@@ -1214,7 +1165,7 @@ the game look inconsistent.
 
 The RC car deserves custom work if no suitable free model exists.
 
-Coins, simple ramps, batteries, and gameplay markers are small enough to
+Rings, simple ramps, batteries, and gameplay markers are small enough to
 create without turning Blender into a major part of production.
 
 Everything else should be reused when possible.
@@ -1345,9 +1296,9 @@ small set of clearly different materials is enough.
 
 ## Collectible Sound
 
-Coins need a short and recognizable pickup sound.
+Rings need a short and recognizable pickup sound.
 
-The sound should still work when several coins are collected within one
+The sound should still work when several rings are collected within one
 or two seconds.
 
 Special collectibles should use a related but more noticeable sound so
@@ -1384,7 +1335,7 @@ The purpose of this scene is to find out whether controlling the car is
 fun.
 
 A player should be able to spend several minutes driving around without
-coins or objectives and still want to try another jump.
+rings or objectives and still want to try another jump.
 
 If that does not happen, work stays on movement.
 
@@ -1394,13 +1345,13 @@ The living room comes later.
 
 Development starts with the vehicle.
 
-Once driving and the camera work, the project can add coins,
+Once driving and the camera work, the project can add rings,
 checkpoints, stunt detection, and a few physics objects.
 
 The first real environment is the living room.
 
 That room acts as the vertical slice. It should include the intended art
-style, real props, coin routes, sofa climbing, at least one hidden
+style, real props, ring routes, sofa climbing, at least one hidden
 route, and one stunt challenge.
 
 Building the rest of the house before this room works would create a lot
@@ -1490,31 +1441,24 @@ Several parts of the game still need answers from prototype testing.
 
 - How long should one full boost meter last?
 
-- How expensive should upgrades be compared with the number of coins
-  available in each room?
+- How many rings should each room require to open the next route?
 
-- How many upgrades should become available after clearing each room?
+- How many extra rings should each room contain beyond its progression
+  requirement?
 
-- Should every upgrade remain available permanently once unlocked, or
-  should the garage present a smaller rotating selection?
-
-- How much should upgrades improve the car before they start making
-  earlier rooms too easy?
+- Should ring requirements use a total collected count or a separate
+  count for each room?
 
 - How many main rooms should the final game contain?
 
-- Should the garage act as both a normal playable room and the place
-  where upgrades are purchased?
-
-- What should count as clearing a room: reaching the main elevated
-  progression goal, collecting a minimum number of coins, or completing
-  both?
+- How should a room clearly communicate its ring requirement and show
+  that the next route has opened?
 
 - How difficult should the final challenge be compared with the hardest
   optional routes in the game?
 
 - Should the final challenge require only the car’s base abilities, or
-  assume the player has purchased several upgrades?
+  should it include a separate optional expert route?
 
 # Appendix A: Current Technical Setup
 

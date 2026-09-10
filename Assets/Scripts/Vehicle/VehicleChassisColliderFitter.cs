@@ -24,6 +24,11 @@ public sealed class VehicleChassisColliderFitter : MonoBehaviour
     public void FitCollider()
     {
         chassisCollider ??= GetComponent<BoxCollider>();
+        if (chassisCollider == null)
+        {
+            return;
+        }
+
         Transform root = modelRoot != null ? modelRoot : transform;
         Renderer[] renderers = root.GetComponentsInChildren<Renderer>(true);
 
