@@ -11,6 +11,7 @@ public sealed class VehicleBoost : MonoBehaviour
 
     private VehicleInput input;
     private ArcadeVehicleController vehicle;
+    private VehicleResetter resetter;
 
     public float Energy { get; private set; }
     public float NormalizedEnergy => capacity > 0f ? Energy / capacity : 0f;
@@ -20,11 +21,18 @@ public sealed class VehicleBoost : MonoBehaviour
     {
         input = GetComponent<VehicleInput>();
         vehicle = GetComponent<ArcadeVehicleController>();
+        resetter = GetComponent<VehicleResetter>();
         Energy = startFull ? capacity : 0f;
     }
 
     private void FixedUpdate()
     {
+        if (resetter != null && resetter.IsVehicleControlLocked)
+        {
+            IsBoosting = false;
+            return;
+        }
+
         if (input.BoostHeld)
         {
             IsBoosting = Energy > 0f;

@@ -11,9 +11,12 @@ public sealed class VehicleInput : MonoBehaviour
     private InputAction driftAction;
     private InputAction boostAction;
     private InputAction resetAction;
+    private InputAction unstuckAction;
     private InputAction airRollAction;
+    private VehicleResetter resetter;
     private bool hopQueued;
     private bool resetQueued;
+    private bool unstuckQueued;
 
     public Vector2 Drive => driveAction?.ReadValue<Vector2>() ?? Vector2.zero;
     public float AirRoll => airRollAction?.ReadValue<float>() ?? 0f;
@@ -23,6 +26,7 @@ public sealed class VehicleInput : MonoBehaviour
     private void Awake()
     {
         CacheActions();
+        resetter = GetComponent<VehicleResetter>();
     }
 
     private void OnEnable()
@@ -49,13 +53,21 @@ public sealed class VehicleInput : MonoBehaviour
         driftAction = vehicleMap.FindAction("Drift", true);
         boostAction = vehicleMap.FindAction("Boost", true);
         resetAction = vehicleMap.FindAction("Reset", true);
+        unstuckAction = vehicleMap.FindAction("Unstuck", true);
         airRollAction = vehicleMap.FindAction("AirRoll", true);
     }
 
     private void Update()
     {
+        if (resetter != null && resetter.IsVehicleControlLocked)
+        {
+            ClearQueuedActions();
+            return;
+        }
+
         hopQueued |= hopAction != null && hopAction.WasPressedThisFrame();
         resetQueued |= resetAction != null && resetAction.WasPressedThisFrame();
+        unstuckQueued |= unstuckAction != null && unstuckAction.WasPressedThisFrame();
     }
 
     public bool ConsumeHop()
@@ -70,5 +82,19 @@ public sealed class VehicleInput : MonoBehaviour
         bool pressed = resetQueued;
         resetQueued = false;
         return pressed;
+    }
+
+    public bool ConsumeUnstuck()
+    {
+        bool pressed = unstuckQueued;
+        unstuckQueued = false;
+        return pressed;
+    }
+
+    public void ClearQueuedActions()
+    {
+        hopQueued = false;
+        resetQueued = false;
+        unstuckQueued = false;
     }
 }

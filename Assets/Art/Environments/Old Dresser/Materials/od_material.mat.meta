@@ -1,0 +1,17 @@
+fileFormatVersion: 2
+guid: 53219473daca0054bbe56ae2cfbb749d
+timeCreated: 1509389976
+licenseType: Store
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 103771
+  packageName: Old Dresser
+  packageVersion: 1.0
+  assetPath: Assets/Old Dresser/Materials/od_material.mat
+  uploadId: 209120

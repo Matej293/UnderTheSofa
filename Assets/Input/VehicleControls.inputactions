@@ -11,6 +11,7 @@
         { "name": "Boost", "type": "Button", "id": "6e897baf-af5c-42f1-9c2e-5792a5ad6b75", "expectedControlType": "Button", "processors": "", "interactions": "", "initialStateCheck": false },
         { "name": "AirRoll", "type": "Value", "id": "96cbd3f5-b538-47e5-9dbf-a9e5faaecdfc", "expectedControlType": "Axis", "processors": "", "interactions": "", "initialStateCheck": true },
         { "name": "Reset", "type": "Button", "id": "1dc931aa-c3b1-4ce5-b12c-3169d6415544", "expectedControlType": "Button", "processors": "", "interactions": "", "initialStateCheck": false },
+        { "name": "Unstuck", "type": "Button", "id": "db513779-d2ce-4c42-b4fb-c450a4e2f27b", "expectedControlType": "Button", "processors": "", "interactions": "", "initialStateCheck": false },
         { "name": "Pause", "type": "Button", "id": "a568e83a-cf10-41ef-90f2-9fd73f9de3b7", "expectedControlType": "Button", "processors": "", "interactions": "", "initialStateCheck": false }
       ],
       "bindings": [
@@ -28,6 +29,7 @@
         { "name": "negative", "id": "e2e70455-a839-43c4-b70d-655853e37069", "path": "<Keyboard>/q", "interactions": "", "processors": "", "groups": "Keyboard", "action": "AirRoll", "isComposite": false, "isPartOfComposite": true },
         { "name": "positive", "id": "c6cf1f14-cda1-4a80-9407-1b10df48f0ca", "path": "<Keyboard>/e", "interactions": "", "processors": "", "groups": "Keyboard", "action": "AirRoll", "isComposite": false, "isPartOfComposite": true },
         { "name": "", "id": "0b7a4ba3-7c3b-425d-8b89-a2fc95de7c03", "path": "<Keyboard>/r", "interactions": "", "processors": "", "groups": "Keyboard", "action": "Reset", "isComposite": false, "isPartOfComposite": false },
+        { "name": "", "id": "b4d1aa2d-0145-4416-886c-a29b5c5d3ce9", "path": "<Keyboard>/u", "interactions": "", "processors": "", "groups": "Keyboard", "action": "Unstuck", "isComposite": false, "isPartOfComposite": false },
         { "name": "", "id": "724d46f1-0f9f-47cb-9c47-6b749cd8c099", "path": "<Keyboard>/escape", "interactions": "", "processors": "", "groups": "Keyboard", "action": "Pause", "isComposite": false, "isPartOfComposite": false }
       ]
     }

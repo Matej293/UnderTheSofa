@@ -1,0 +1,17 @@
+fileFormatVersion: 2
+guid: 3dad3e347c81186449dd2a9679521f01
+timeCreated: 1509390236
+licenseType: Store
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 100100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 103771
+  packageName: Old Dresser
+  packageVersion: 1.0
+  assetPath: Assets/Old Dresser/Prefabs/Old Dresser.prefab
+  uploadId: 209120

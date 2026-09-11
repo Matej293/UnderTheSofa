@@ -51,6 +51,7 @@ public sealed class ArcadeVehicleController : MonoBehaviour
     private VehicleInput input;
     private VehicleGrounding grounding;
     private VehicleStats stats;
+    private VehicleResetter resetter;
     private Quaternion frontLeftWheelBaseRotation;
     private Quaternion frontRightWheelBaseRotation;
     private Vector3 frontLeftWheelBasePosition;
@@ -81,6 +82,7 @@ public sealed class ArcadeVehicleController : MonoBehaviour
         input = GetComponent<VehicleInput>();
         grounding = GetComponent<VehicleGrounding>();
         stats = GetComponent<VehicleStats>();
+        resetter = GetComponent<VehicleResetter>();
         frontLeftWheel ??= transform.Find("WHEEL_FL");
         frontRightWheel ??= transform.Find("WHEEL_FR");
         rearLeftWheel ??= transform.Find("test/WHEEL_BL");
@@ -247,6 +249,11 @@ public sealed class ArcadeVehicleController : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (resetter != null && resetter.IsVehicleControlLocked)
+        {
+            return;
+        }
+
         Vector2 drive = input.Drive;
         if (grounding.IsGrounded)
         {
@@ -264,8 +271,11 @@ public sealed class ArcadeVehicleController : MonoBehaviour
 
     private void ApplyGroundMovement(Vector2 drive)
     {
-        Vector3 planarVelocity = Vector3.ProjectOnPlane(body.linearVelocity, Vector3.up);
-        float forwardSpeed = Vector3.Dot(planarVelocity, transform.forward);
+        Vector3 groundNormal = grounding.GroundNormal;
+        Vector3 surfaceForward = GetSurfaceForward(groundNormal);
+        Vector3 surfaceRight = Vector3.Cross(groundNormal, surfaceForward).normalized;
+        Vector3 planarVelocity = Vector3.ProjectOnPlane(body.linearVelocity, groundNormal);
+        float forwardSpeed = Vector3.Dot(planarVelocity, surfaceForward);
         float throttle = drive.y;
 
         bool handbrakeHeld = input.DriftHeld;
@@ -273,7 +283,7 @@ public sealed class ArcadeVehicleController : MonoBehaviour
         float driveMultiplier = handbrakeHeld ? handbrakeThrottleMultiplier : 1f;
         if (throttle > 0f && forwardSpeed < topSpeed)
         {
-            ApplyRearDriveForce(transform.forward * throttle * acceleration * stats.AccelerationMultiplier * driveMultiplier);
+            ApplyRearDriveForce(surfaceForward * throttle * acceleration * stats.AccelerationMultiplier * driveMultiplier);
         }
         else if (throttle < 0f)
         {
@@ -281,7 +291,7 @@ public sealed class ArcadeVehicleController : MonoBehaviour
             float speedLimit = forwardSpeed > 0.5f ? topSpeed : reverseSpeed;
             if (Mathf.Abs(forwardSpeed) < speedLimit)
             {
-                ApplyRearDriveForce(transform.forward * throttle * force * stats.AccelerationMultiplier * driveMultiplier);
+                ApplyRearDriveForce(surfaceForward * throttle * force * stats.AccelerationMultiplier * driveMultiplier);
             }
         }
 
@@ -294,7 +304,7 @@ public sealed class ArcadeVehicleController : MonoBehaviour
             float lowSpeedResponse = Mathf.InverseLerp(minimumSteeringSpeed, lowSpeedSteeringFullSpeed, absoluteForwardSpeed);
             turnRate *= lowSpeedResponse;
             float turnAmount = drive.x * turnRate * direction * Time.fixedDeltaTime;
-            body.MoveRotation(body.rotation * Quaternion.AngleAxis(turnAmount, Vector3.up));
+            body.MoveRotation(body.rotation * Quaternion.AngleAxis(turnAmount, groundNormal));
         }
 
         Vector3 frontAxlePosition = transform.TransformPoint(frontAxleLocal);
@@ -306,16 +316,16 @@ public sealed class ArcadeVehicleController : MonoBehaviour
             rearGrip = Mathf.Lerp(lowSpeedDriftRearGrip, highSpeedDriftRearGrip, driftSpeed);
         }
 
-        ApplyAxleGrip(frontAxlePosition, frontLateralGrip);
-        ApplyAxleGrip(rearAxlePosition, rearGrip);
+        ApplyAxleGrip(frontAxlePosition, surfaceRight, frontLateralGrip);
+        ApplyAxleGrip(rearAxlePosition, surfaceRight, rearGrip);
         if (handbrakeHeld)
         {
-            float rearForwardSpeed = Vector3.Dot(body.GetPointVelocity(rearAxlePosition), transform.forward);
+            float rearForwardSpeed = Vector3.Dot(body.GetPointVelocity(rearAxlePosition), surfaceForward);
             if (Mathf.Abs(rearForwardSpeed) > 0.01f)
             {
                 float brakeFactor = Mathf.InverseLerp(0f, driftFullSpeed, Mathf.Abs(rearForwardSpeed));
                 float brakeAcceleration = Mathf.Lerp(lowSpeedHandbrakeDeceleration, highSpeedHandbrakeDeceleration, brakeFactor);
-                body.AddForceAtPosition(-transform.forward * Mathf.Sign(rearForwardSpeed) * brakeAcceleration, rearAxlePosition, ForceMode.Acceleration);
+                body.AddForceAtPosition(-surfaceForward * Mathf.Sign(rearForwardSpeed) * brakeAcceleration, rearAxlePosition, ForceMode.Acceleration);
             }
         }
     }
@@ -328,13 +338,20 @@ public sealed class ArcadeVehicleController : MonoBehaviour
     public void ApplyBoostAcceleration(float accelerationForce)
     {
         float multiplier = input != null && input.DriftHeld ? handbrakeBoostMultiplier : 1f;
-        ApplyRearDriveForce(transform.forward * accelerationForce * multiplier);
+        Vector3 driveForward = grounding != null && grounding.IsGrounded
+            ? GetSurfaceForward(grounding.GroundNormal)
+            : transform.forward;
+        ApplyRearDriveForce(driveForward * accelerationForce * multiplier);
     }
 
     private bool IsDrifting => input != null
                                && input.DriftHeld
                                && Mathf.Abs(input.Drive.x) >= driftSteerThreshold
-                               && Mathf.Abs(Vector3.Dot(Vector3.ProjectOnPlane(body.linearVelocity, Vector3.up), transform.forward)) >= driftEngageSpeed;
+                               && grounding != null
+                               && grounding.IsGrounded
+                               && Mathf.Abs(Vector3.Dot(
+                                   Vector3.ProjectOnPlane(body.linearVelocity, grounding.GroundNormal),
+                                   GetSurfaceForward(grounding.GroundNormal))) >= driftEngageSpeed;
 
     private Vector3 GetRearDrivePosition()
     {
@@ -343,10 +360,16 @@ public sealed class ArcadeVehicleController : MonoBehaviour
             : transform.TransformPoint(0f, -0.22f, -0.75f);
     }
 
-    private void ApplyAxleGrip(Vector3 axlePosition, float grip)
+    private Vector3 GetSurfaceForward(Vector3 groundNormal)
     {
-        float lateralSpeed = Vector3.Dot(body.GetPointVelocity(axlePosition), transform.right);
-        body.AddForceAtPosition(-transform.right * lateralSpeed * grip, axlePosition, ForceMode.Acceleration);
+        Vector3 surfaceForward = Vector3.ProjectOnPlane(transform.forward, groundNormal);
+        return surfaceForward.sqrMagnitude > 0.001f ? surfaceForward.normalized : transform.forward;
+    }
+
+    private void ApplyAxleGrip(Vector3 axlePosition, Vector3 surfaceRight, float grip)
+    {
+        float lateralSpeed = Vector3.Dot(body.GetPointVelocity(axlePosition), surfaceRight);
+        body.AddForceAtPosition(-surfaceRight * lateralSpeed * grip, axlePosition, ForceMode.Acceleration);
     }
 
     private void ApplyAirControl(Vector2 drive, float roll)

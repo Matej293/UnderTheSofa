@@ -9,17 +9,19 @@ public sealed class VehicleStabilizer : MonoBehaviour
 
     private Rigidbody body;
     private VehicleGrounding grounding;
+    private VehicleResetter resetter;
 
     private void Awake()
     {
         body = GetComponent<Rigidbody>();
         body.centerOfMass = centerOfMass;
         grounding = GetComponent<VehicleGrounding>();
+        resetter = GetComponent<VehicleResetter>();
     }
 
     private void FixedUpdate()
     {
-        if (!grounding.IsGrounded)
+        if ((resetter != null && resetter.IsVehicleControlLocked) || !grounding.IsGrounded)
         {
             return;
         }

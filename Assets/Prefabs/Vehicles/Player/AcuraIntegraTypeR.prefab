@@ -110,8 +110,8 @@ GameObject:
   - component: {fileID: 5410127594362484902}
   - component: {fileID: 7034148290235616512}
   - component: {fileID: 2289560540682146124}
-  - component: {fileID: 4684928945564322192}
   - component: {fileID: 2005950804067002816}
+  - component: {fileID: 9044277719810023620}
   m_Layer: 0
   m_Name: AcuraIntegraTypeR
   m_TagString: Untagged
@@ -175,7 +175,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c59b8d9af2a050d4cb7f861689f27343, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::VehicleInput
   controls: {fileID: -944628639613478452, guid: bda5ff5e54d162642909bd808841904f, type: 3}
 --- !u!114 &1967952457559111217
@@ -269,6 +269,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1a0a196afab57ae48a8577228eecf780, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::VehicleResetter
+  rewindSeconds: 3
+  rewindPlaybackDuration: 1.5
   minimumUprightDot: 0.8
   minimumGroundUpDot: 0.65
   minimumSafeHeight: -2
@@ -307,18 +309,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::VehicleStats
   accelerationMultiplier: 1
---- !u!114 &4684928945564322192
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7161610159319752990}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fd9346e6008d55a48826ef681bf87e14, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::CoinWallet
 --- !u!64 &2005950804067002816
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -341,6 +331,18 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 4300000, guid: 8bbed40865fa335468fa32504e792995, type: 2}
+--- !u!114 &9044277719810023620
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7161610159319752990}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fd9346e6008d55a48826ef681bf87e14, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::RingWallet
 --- !u!1001 &3196791262911959901
 PrefabInstance:
   m_ObjectHideFlags: 0
