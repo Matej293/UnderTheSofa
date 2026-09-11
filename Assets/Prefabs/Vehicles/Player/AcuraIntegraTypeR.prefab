@@ -109,7 +109,6 @@ GameObject:
   - component: {fileID: 130093956118436533}
   - component: {fileID: 5410127594362484902}
   - component: {fileID: 7034148290235616512}
-  - component: {fileID: 2289560540682146124}
   - component: {fileID: 2005950804067002816}
   - component: {fileID: 9044277719810023620}
   m_Layer: 0
@@ -296,19 +295,6 @@ MonoBehaviour:
   drainPerSecond: 1
   rechargePerSecond: 0.6
   startFull: 1
---- !u!114 &2289560540682146124
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7161610159319752990}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: caedce99175355143a06cd5ff650e9a8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::VehicleStats
-  accelerationMultiplier: 1
 --- !u!64 &2005950804067002816
 MeshCollider:
   m_ObjectHideFlags: 0

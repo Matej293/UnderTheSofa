@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody), typeof(VehicleInput), typeof(VehicleGrounding))]
-[RequireComponent(typeof(VehicleStats))]
 public sealed class ArcadeVehicleController : MonoBehaviour
 {
     [Header("Ground Movement")]
@@ -50,7 +49,6 @@ public sealed class ArcadeVehicleController : MonoBehaviour
     private Rigidbody body;
     private VehicleInput input;
     private VehicleGrounding grounding;
-    private VehicleStats stats;
     private VehicleResetter resetter;
     private Quaternion frontLeftWheelBaseRotation;
     private Quaternion frontRightWheelBaseRotation;
@@ -81,7 +79,6 @@ public sealed class ArcadeVehicleController : MonoBehaviour
         body = GetComponent<Rigidbody>();
         input = GetComponent<VehicleInput>();
         grounding = GetComponent<VehicleGrounding>();
-        stats = GetComponent<VehicleStats>();
         resetter = GetComponent<VehicleResetter>();
         frontLeftWheel ??= transform.Find("WHEEL_FL");
         frontRightWheel ??= transform.Find("WHEEL_FR");
@@ -283,7 +280,7 @@ public sealed class ArcadeVehicleController : MonoBehaviour
         float driveMultiplier = handbrakeHeld ? handbrakeThrottleMultiplier : 1f;
         if (throttle > 0f && forwardSpeed < topSpeed)
         {
-            ApplyRearDriveForce(surfaceForward * throttle * acceleration * stats.AccelerationMultiplier * driveMultiplier);
+            ApplyRearDriveForce(surfaceForward * throttle * acceleration * driveMultiplier);
         }
         else if (throttle < 0f)
         {
@@ -291,7 +288,7 @@ public sealed class ArcadeVehicleController : MonoBehaviour
             float speedLimit = forwardSpeed > 0.5f ? topSpeed : reverseSpeed;
             if (Mathf.Abs(forwardSpeed) < speedLimit)
             {
-                ApplyRearDriveForce(surfaceForward * throttle * force * stats.AccelerationMultiplier * driveMultiplier);
+                ApplyRearDriveForce(surfaceForward * throttle * force * driveMultiplier);
             }
         }
 

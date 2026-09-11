@@ -13,15 +13,4 @@ public sealed class RingWallet : MonoBehaviour
         RingsChanged?.Invoke(Rings);
     }
 
-    public bool TrySpendRings(int amount)
-    {
-        if (amount <= 0 || Rings < amount)
-        {
-            return false;
-        }
-
-        Rings -= amount;
-        RingsChanged?.Invoke(Rings);
-        return true;
-    }
 }
