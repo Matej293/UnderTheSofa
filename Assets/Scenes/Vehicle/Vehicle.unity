@@ -2209,8 +2209,9 @@ MonoBehaviour:
   completionMessage: 'GAME COMPLETE!
 
     THANKS FOR PLAYING'
-  messageDuration: 6
+  messageDuration: 3
   isGameCompletion: 1
+  playNotificationSound: 1
 --- !u!114 &394957549
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3174,7 +3175,7 @@ AudioSource:
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 8300000, guid: 41e94abbb9f40ad4f9a3ee9616e633a9, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 0.75
+  m_Volume: 1
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -6294,6 +6295,15 @@ MonoBehaviour:
   menuSound: {fileID: 8300000, guid: 57eed2c186a1b524db80ae0dc0a9c0c9, type: 3}
   errorSound: {fileID: 8300000, guid: e9846b26e02dd4445ab38eea3ae1598b, type: 3}
   notificationSound: {fileID: 8300000, guid: 419700d388a876647bb0ddb0f883527f, type: 3}
+  menuMusic: {fileID: 8300000, guid: 80d0070832d47fc41b1a321da63e18f4, type: 3}
+  gameplayMusic:
+  - {fileID: 8300000, guid: bb3dbf49db9ad34458564ba7b987a97f, type: 3}
+  - {fileID: 8300000, guid: 25ca37d71e0b514459647fb780c98802, type: 3}
+  - {fileID: 8300000, guid: caa1dd73a41969f40afd730ec42d5f0b, type: 3}
+  menuMusicFadeInDuration: 0.6
+  menuMusicFadeOutDuration: 0.3
+  gameplayMusicFadeInDuration: 1.25
+  gameplayTrackFadeOutDuration: 0.75
 --- !u!114 &980056314
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11401,9 +11411,11 @@ MonoBehaviour:
   objectsToEnable: []
   completionMessage: '7 RINGS COLLECTED!
 
-    SIDE DOOR UNLOCKED'
+
+    BATHROOM DOOR UNLOCKED'
   messageDuration: 3
   isGameCompletion: 0
+  playNotificationSound: 0
 --- !u!1 &1615208443 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1835210009659533079, guid: ddd1519f3e2472a47adcd2755e0e0212, type: 3}
@@ -12241,7 +12253,7 @@ AudioSource:
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 8300000, guid: 41e94abbb9f40ad4f9a3ee9616e633a9, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 0.75
+  m_Volume: 1
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -14623,9 +14635,13 @@ MonoBehaviour:
   - {fileID: 2140000006}
   objectsToEnable:
   - {fileID: 0}
-  completionMessage: DOOR UNLOCKED
+  completionMessage: '12 RINGS COLLECTED!
+
+
+    BEDROOM DOOR UNLOCKED'
   messageDuration: 2
   isGameCompletion: 0
+  playNotificationSound: 0
 --- !u!1 &2147000001
 GameObject:
   m_ObjectHideFlags: 0

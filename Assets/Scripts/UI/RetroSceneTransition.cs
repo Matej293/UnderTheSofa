@@ -17,11 +17,18 @@ public sealed class RetroSceneTransition : MonoBehaviour
     private float incomingCameraFieldOfView;
     private bool cameraPoseApplied;
 
-    public static void BeginLoad(string sceneName, float fadeDuration, Camera outgoingCamera = null)
+    public static void BeginLoad(
+        string sceneName,
+        float fadeOutDuration,
+        float fadeInDuration,
+        Camera outgoingCamera = null)
     {
         RetroSceneTransition transition = EnsureInstance();
         transition.CaptureCameraPose(outgoingCamera);
-        transition.StartCoroutine(transition.LoadRoutine(sceneName, Mathf.Max(0.1f, fadeDuration)));
+        transition.StartCoroutine(transition.LoadRoutine(
+            sceneName,
+            Mathf.Max(0.1f, fadeOutDuration),
+            Mathf.Max(0.1f, fadeInDuration)));
     }
 
     private static RetroSceneTransition EnsureInstance()
@@ -66,7 +73,7 @@ public sealed class RetroSceneTransition : MonoBehaviour
         pendingCameraFieldOfView = outgoingCamera.fieldOfView;
     }
 
-    private IEnumerator LoadRoutine(string sceneName, float fadeDuration)
+    private IEnumerator LoadRoutine(string sceneName, float fadeOutDuration, float fadeInDuration)
     {
         fadeGroup.gameObject.SetActive(true);
         fadeGroup.alpha = 0f;
@@ -80,10 +87,10 @@ public sealed class RetroSceneTransition : MonoBehaviour
 
         load.allowSceneActivation = false;
         float elapsed = 0f;
-        while (elapsed < fadeDuration)
+        while (elapsed < fadeOutDuration)
         {
             elapsed += Time.unscaledDeltaTime;
-            fadeGroup.alpha = Mathf.Clamp01(elapsed / fadeDuration);
+            fadeGroup.alpha = Mathf.Clamp01(elapsed / fadeOutDuration);
             yield return null;
         }
 
@@ -112,10 +119,10 @@ public sealed class RetroSceneTransition : MonoBehaviour
         // Give the render texture and chase camera one covered frame to initialize.
         yield return null;
         elapsed = 0f;
-        while (elapsed < fadeDuration)
+        while (elapsed < fadeInDuration)
         {
             elapsed += Time.unscaledDeltaTime;
-            float progress = Mathf.SmoothStep(0f, 1f, Mathf.Clamp01(elapsed / fadeDuration));
+            float progress = Mathf.SmoothStep(0f, 1f, Mathf.Clamp01(elapsed / fadeInDuration));
             fadeGroup.alpha = 1f - progress;
             if (incomingCamera != null)
             {

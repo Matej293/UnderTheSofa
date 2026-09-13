@@ -7,16 +7,18 @@ public sealed class RetroGameHUD : MonoBehaviour
 {
     private readonly struct NotificationRequest
     {
-        public NotificationRequest(string message, float duration, bool completion)
+        public NotificationRequest(string message, float duration, bool completion, bool playSound)
         {
             Message = message;
             Duration = duration;
             Completion = completion;
+            PlaySound = playSound;
         }
 
         public string Message { get; }
         public float Duration { get; }
         public bool Completion { get; }
+        public bool PlaySound { get; }
     }
 
     private sealed class BoostParticle
@@ -112,10 +114,10 @@ public sealed class RetroGameHUD : MonoBehaviour
         UpdateNotification(deltaTime);
     }
 
-    public void ShowNotification(string message, float duration, bool completion = false)
+    public void ShowNotification(string message, float duration, bool completion = false, bool playSound = true)
     {
         if (string.IsNullOrWhiteSpace(message)) return;
-        notifications.Enqueue(new NotificationRequest(message, Mathf.Max(0.75f, duration), completion));
+        notifications.Enqueue(new NotificationRequest(message, Mathf.Max(0.75f, duration), completion, playSound));
         if (!showingNotification) BeginNextNotification();
     }
 
@@ -299,7 +301,7 @@ public sealed class RetroGameHUD : MonoBehaviour
         showingNotification = true;
         notificationText.text = currentNotification.Message;
         notificationPanel.SetActive(true);
-        if (notificationSound != null) audioSource.PlayOneShot(notificationSound);
+        if (currentNotification.PlaySound && notificationSound != null) audioSource.PlayOneShot(notificationSound);
     }
 
     private void UpdateNotification(float deltaTime)

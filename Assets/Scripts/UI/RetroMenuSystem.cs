@@ -18,6 +18,7 @@ public sealed class RetroMenuSystem : MonoBehaviour
         Main,
         Pause,
         Options,
+        Controls,
         Credits,
         QuitConfirm,
         Completion
@@ -38,6 +39,7 @@ public sealed class RetroMenuSystem : MonoBehaviour
     [SerializeField] private string mainMenuSceneName = "MainMenu";
     [SerializeField, Min(0.1f)] private float newGameZoomDuration = 1.35f;
     [SerializeField, Min(0.1f)] private float newGameFadeDuration = 0.45f;
+    [SerializeField, Min(0.1f)] private float newGameGameplayFadeInDuration = 1.25f;
 
     [Header("Skin 06")]
     [SerializeField] private Font regularFont;
@@ -54,6 +56,14 @@ public sealed class RetroMenuSystem : MonoBehaviour
     [SerializeField] private AudioClip menuSound;
     [SerializeField] private AudioClip errorSound;
     [SerializeField] private AudioClip notificationSound;
+
+    [Header("Music")]
+    [SerializeField] private AudioClip menuMusic;
+    [SerializeField] private AudioClip[] gameplayMusic;
+    [SerializeField, Min(0.05f)] private float menuMusicFadeInDuration = 0.6f;
+    [SerializeField, Min(0.05f)] private float menuMusicFadeOutDuration = 0.3f;
+    [SerializeField, Min(0.05f)] private float gameplayMusicFadeInDuration = 1.25f;
+    [SerializeField, Min(0.05f)] private float gameplayTrackFadeOutDuration = 0.75f;
 
     private readonly List<Entry> entries = new();
     private readonly Dictionary<Page, int> selectedIndices = new();
@@ -78,6 +88,13 @@ public sealed class RetroMenuSystem : MonoBehaviour
         audioSource.playOnAwake = false;
         audioSource.ignoreListenerPause = true;
         audioSource.outputAudioMixerGroup = sfxGroup;
+        GameMusicController.Ensure(
+            menuMusic,
+            gameplayMusic,
+            startMenu,
+            menuMusicFadeInDuration,
+            gameplayMusicFadeInDuration,
+            gameplayTrackFadeOutDuration);
 
         CreateCanvas();
         if (startMenu)
@@ -139,6 +156,30 @@ public sealed class RetroMenuSystem : MonoBehaviour
         }
     }
 
+    private void OnApplicationFocus(bool hasFocus)
+    {
+        if (!hasFocus)
+        {
+            PauseForFocusLoss();
+        }
+    }
+
+    private void OnApplicationPause(bool pauseStatus)
+    {
+        if (pauseStatus)
+        {
+            PauseForFocusLoss();
+        }
+    }
+
+    private void PauseForFocusLoss()
+    {
+        if (!startMenu && !transitionInProgress && !IsMenuOpen)
+        {
+            OpenPause();
+        }
+    }
+
     public void ShowCompletion(string message)
     {
         completionMessage = string.IsNullOrWhiteSpace(message) ? "GAME COMPLETE" : message;
@@ -161,6 +202,7 @@ public sealed class RetroMenuSystem : MonoBehaviour
         previousTimeScale = Time.timeScale <= 0f ? 1f : Time.timeScale;
         Time.timeScale = 0f;
         AudioListener.pause = true;
+        GameMusicController.Instance?.PauseGameplayMusic();
         if (vehicleInput != null)
         {
             vehicleInputWasEnabled = vehicleInput.enabled;
@@ -173,6 +215,7 @@ public sealed class RetroMenuSystem : MonoBehaviour
         canvas.gameObject.SetActive(false);
         Time.timeScale = previousTimeScale;
         AudioListener.pause = false;
+        GameMusicController.Instance?.ResumeGameplayMusic();
         if (vehicleInput != null && vehicleInputWasEnabled)
         {
             vehicleInput.enabled = true;
@@ -214,7 +257,7 @@ public sealed class RetroMenuSystem : MonoBehaviour
         RetroUiFactory.Stretch(shade.rectTransform);
 
         bool leftAligned = page == Page.Main && startMenu;
-        bool plainDarkPage = leftAligned || page == Page.Options || page == Page.Credits;
+        bool plainDarkPage = leftAligned || page == Page.Pause || page == Page.Options || page == Page.Controls || page == Page.Credits;
         Image brush = RetroUiFactory.CreateImage("Skin06 Brush", content, new Color(0.7f, 0.74f, 0.08f, 0.72f), brushSprite);
         RectTransform brushRect = brush.rectTransform;
         if (page == Page.Completion)
@@ -237,7 +280,7 @@ public sealed class RetroMenuSystem : MonoBehaviour
             RectTransform menuPanelRect = menuPanel.rectTransform;
             menuPanelRect.anchorMin = menuPanelRect.anchorMax = leftAligned ? new Vector2(0f, 0.5f) : new Vector2(0.5f, 0.5f);
             menuPanelRect.pivot = leftAligned ? new Vector2(0f, 0.5f) : new Vector2(0.5f, 0.5f);
-            menuPanelRect.anchoredPosition = leftAligned ? new Vector2(0f, -30f) : Vector2.zero;
+            menuPanelRect.anchoredPosition = leftAligned ? new Vector2(0f, -30f) : new Vector2(0f, -22f);
             menuPanelRect.sizeDelta = leftAligned ? new Vector2(390f, 255f) : new Vector2(430f, 250f);
         }
 
@@ -262,6 +305,7 @@ public sealed class RetroMenuSystem : MonoBehaviour
             case Page.Main:
                 AddEntry(list, () => "NEW GAME", StartGame);
                 AddEntry(list, () => "OPTIONS", () => OpenSubPage(Page.Options));
+                AddEntry(list, () => "CONTROLS", () => OpenSubPage(Page.Controls));
                 AddEntry(list, () => "CREDITS", () => OpenSubPage(Page.Credits));
                 AddEntry(list, () => "QUIT", () => OpenSubPage(Page.QuitConfirm));
                 break;
@@ -277,6 +321,10 @@ public sealed class RetroMenuSystem : MonoBehaviour
                 AddEntry(list, () => $"FULLSCREEN      {(GameSettings.Fullscreen ? "ON" : "OFF")}", ToggleFullscreen, _ => ToggleFullscreen());
                 AddEntry(list, () => $"RESOLUTION      {CurrentResolutionLabel()}", () => ChangeResolution(1), ChangeResolution);
                 AddEntry(list, () => "BACK", ReturnFromSubPage);
+                break;
+            case Page.Controls:
+                CreateControls(list);
+                AddEntry(list, () => "BACK", ReturnFromSubPage, null, 190f);
                 break;
             case Page.Credits:
                 CreateCredits(list);
@@ -303,6 +351,7 @@ public sealed class RetroMenuSystem : MonoBehaviour
             Page.Main => "UNDER THE SOFA",
             Page.Pause => "PAUSED",
             Page.Options => "OPTIONS",
+            Page.Controls => "CONTROLS",
             Page.Credits => "CREDITS",
             Page.QuitConfirm => "EXIT GAME?",
             Page.Completion => "GAME COMPLETE",
@@ -336,6 +385,31 @@ public sealed class RetroMenuSystem : MonoBehaviour
         rect.pivot = new Vector2(0.5f, 1f);
         rect.anchoredPosition = new Vector2(0f, -18f);
         rect.sizeDelta = new Vector2(0f, 120f);
+    }
+
+    private void CreateControls(RectTransform parent)
+    {
+        Text keys = RetroUiFactory.CreateText("Control Keys", parent, regularFont,
+            "W\nA\nS\nD\nR\nU\nSPACE", 13, TextAnchor.UpperLeft, RetroUiFactory.Cream);
+        RectTransform keysRect = keys.rectTransform;
+        keysRect.anchorMin = keysRect.anchorMax = new Vector2(0f, 1f);
+        keysRect.pivot = new Vector2(0f, 1f);
+        keysRect.anchoredPosition = new Vector2(28f, -12f);
+        keysRect.sizeDelta = new Vector2(90f, 164f);
+
+        Text actions = RetroUiFactory.CreateText("Control Actions", parent, regularFont,
+            "ACCELERATE\n" +
+            "STEER LEFT\n" +
+            "BRAKE / REVERSE\n" +
+            "STEER RIGHT\n" +
+            "REWIND\n" +
+            "UNSTUCK\n" +
+            "HOP", 13, TextAnchor.UpperLeft, RetroUiFactory.Cream);
+        RectTransform actionsRect = actions.rectTransform;
+        actionsRect.anchorMin = actionsRect.anchorMax = new Vector2(0f, 1f);
+        actionsRect.pivot = new Vector2(0f, 1f);
+        actionsRect.anchoredPosition = new Vector2(135f, -12f);
+        actionsRect.sizeDelta = new Vector2(230f, 164f);
     }
 
     private void CreateCompletionMessage(RectTransform parent)
@@ -407,6 +481,7 @@ public sealed class RetroMenuSystem : MonoBehaviour
         switch (page)
         {
             case Page.Options:
+            case Page.Controls:
             case Page.Credits:
                 ReturnFromSubPage();
                 break;
@@ -454,6 +529,7 @@ public sealed class RetroMenuSystem : MonoBehaviour
     {
         if (!transitionInProgress)
         {
+            GameMusicController.Instance?.BeginGameplayTransition(menuMusicFadeOutDuration);
             StartCoroutine(NewGameTransition());
         }
     }
@@ -495,7 +571,11 @@ public sealed class RetroMenuSystem : MonoBehaviour
         }
 
         RestoreRuntimeState();
-        RetroSceneTransition.BeginLoad(gameplaySceneName, newGameFadeDuration, menuCamera);
+        RetroSceneTransition.BeginLoad(
+            gameplaySceneName,
+            newGameFadeDuration,
+            newGameGameplayFadeInDuration,
+            menuCamera);
     }
 
     private void LoadMainMenu()

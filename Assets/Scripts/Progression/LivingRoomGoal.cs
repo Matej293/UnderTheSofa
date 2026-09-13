@@ -11,6 +11,7 @@ public sealed class LivingRoomGoal : MonoBehaviour
     [SerializeField] private string completionMessage = "DOOR UNLOCKED";
     [SerializeField, Min(0f)] private float messageDuration = 2f;
     [SerializeField] private bool isGameCompletion;
+    [SerializeField] private bool playNotificationSound = true;
 
     public bool IsCompleted { get; private set; }
 
@@ -65,7 +66,7 @@ public sealed class LivingRoomGoal : MonoBehaviour
 
         if (RetroGameHUD.Instance != null)
         {
-            RetroGameHUD.Instance.ShowNotification(completionMessage, messageDuration, isGameCompletion);
+            RetroGameHUD.Instance.ShowNotification(completionMessage, messageDuration, isGameCompletion, playNotificationSound);
         }
         else
         {
