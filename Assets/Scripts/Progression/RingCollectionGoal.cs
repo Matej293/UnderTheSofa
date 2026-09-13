@@ -10,7 +10,7 @@ public sealed class RingCollectionGoal : MonoBehaviour
     {
         if (wallet == null)
         {
-            wallet = FindFirstObjectByType<RingWallet>();
+            wallet = FindAnyObjectByType<RingWallet>();
         }
     }
 

@@ -11,7 +11,7 @@ public sealed class RingCounterHUD : MonoBehaviour
     {
         if (wallet == null)
         {
-            wallet = FindFirstObjectByType<RingWallet>();
+            wallet = FindAnyObjectByType<RingWallet>();
         }
 
         Canvas canvas = new GameObject("RingCanvas", typeof(Canvas), typeof(CanvasScaler)).GetComponent<Canvas>();
