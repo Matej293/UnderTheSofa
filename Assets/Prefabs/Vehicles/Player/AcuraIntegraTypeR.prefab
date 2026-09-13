@@ -9902,8 +9902,6 @@ MonoBehaviour:
   rearLeftWheel: {fileID: 1432678255079005408}
   rearRightWheel: {fileID: 8508985170169604770}
   visualWheelRadius: 0.28
-  cockpitModelRoot: {fileID: 3159259514051359926}
-  cockpitSteeringWheelAngle: 110
   driftEngageSpeed: 3
   driftFullSpeed: 18
   driftSteerThreshold: 0.25
