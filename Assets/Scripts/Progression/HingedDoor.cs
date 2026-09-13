@@ -6,6 +6,7 @@ public sealed class HingedDoor : MonoBehaviour
     [SerializeField] private Transform door;
     [SerializeField] private float openAngle = 90f;
     [SerializeField, Min(0.01f)] private float openDuration = 1f;
+    [SerializeField] private AudioSource openingAudio;
 
     [Header("Optional Hinge Pivot")]
     [SerializeField] private bool useLocalBoundsHinge;
@@ -27,6 +28,7 @@ public sealed class HingedDoor : MonoBehaviour
         }
 
         isOpen = true;
+        openingAudio?.Play();
         StartCoroutine(OpenRoutine());
     }
 
