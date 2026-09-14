@@ -257,7 +257,7 @@ public sealed class RetroMenuSystem : MonoBehaviour
         RetroUiFactory.Stretch(shade.rectTransform);
 
         bool leftAligned = page == Page.Main && startMenu;
-        bool plainDarkPage = leftAligned || page == Page.Pause || page == Page.Options || page == Page.Controls || page == Page.Credits;
+        bool plainDarkPage = leftAligned || page == Page.Pause || page == Page.Options || page == Page.Controls || page == Page.Credits || page == Page.QuitConfirm;
         Image brush = RetroUiFactory.CreateImage("Skin06 Brush", content, new Color(0.7f, 0.74f, 0.08f, 0.72f), brushSprite);
         RectTransform brushRect = brush.rectTransform;
         if (page == Page.Completion)
@@ -312,6 +312,7 @@ public sealed class RetroMenuSystem : MonoBehaviour
             case Page.Pause:
                 AddEntry(list, () => "RESUME", ResumeGameplay);
                 AddEntry(list, () => "OPTIONS", () => OpenSubPage(Page.Options));
+                AddEntry(list, () => "CONTROLS", () => OpenSubPage(Page.Controls));
                 AddEntry(list, () => "MAIN MENU", LoadMainMenu);
                 AddEntry(list, () => "QUIT", () => OpenSubPage(Page.QuitConfirm));
                 break;
@@ -390,7 +391,7 @@ public sealed class RetroMenuSystem : MonoBehaviour
     private void CreateControls(RectTransform parent)
     {
         Text keys = RetroUiFactory.CreateText("Control Keys", parent, regularFont,
-            "W\nA\nS\nD\nR\nU\nSPACE", 13, TextAnchor.UpperLeft, RetroUiFactory.Cream);
+            "W\nA\nS\nD\nR\nU\nLEFT SHIFT\nSPACE", 13, TextAnchor.UpperLeft, RetroUiFactory.Cream);
         RectTransform keysRect = keys.rectTransform;
         keysRect.anchorMin = keysRect.anchorMax = new Vector2(0f, 1f);
         keysRect.pivot = new Vector2(0f, 1f);
@@ -404,6 +405,7 @@ public sealed class RetroMenuSystem : MonoBehaviour
             "STEER RIGHT\n" +
             "REWIND\n" +
             "UNSTUCK\n" +
+            "DRIFT\n" +
             "HOP", 13, TextAnchor.UpperLeft, RetroUiFactory.Cream);
         RectTransform actionsRect = actions.rectTransform;
         actionsRect.anchorMin = actionsRect.anchorMax = new Vector2(0f, 1f);
